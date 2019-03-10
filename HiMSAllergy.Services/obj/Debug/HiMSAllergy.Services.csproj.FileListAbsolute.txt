@@ -1,0 +1,9 @@
+D:\Development\HiMSAllergy\HiMSAllergy.Services\obj\Debug\HiMSAllergy.Services.csprojAssemblyReference.cache
+D:\Development\HiMSAllergy\HiMSAllergy.Services\obj\Debug\HiMSAllergy.Services.csproj.CoreCompileInputs.cache
+D:\Development\HiMSAllergy\HiMSAllergy.Services\bin\Debug\HiMSAllergy.Services.dll
+D:\Development\HiMSAllergy\HiMSAllergy.Services\bin\Debug\HiMSAllergy.Services.pdb
+D:\Development\HiMSAllergy\HiMSAllergy.Services\obj\Debug\HiMSAllergy.Services.dll
+D:\Development\HiMSAllergy\HiMSAllergy.Services\obj\Debug\HiMSAllergy.Services.pdb
+D:\Development\HiMSAllergy\HiMSAllergy.Services\bin\Debug\HiMSAllergy.Models.dll
+D:\Development\HiMSAllergy\HiMSAllergy.Services\bin\Debug\HiMSAllergy.Models.pdb
+D:\Development\HiMSAllergy\HiMSAllergy.Services\obj\Debug\HiMSAllergy.Services.csproj.CopyComplete

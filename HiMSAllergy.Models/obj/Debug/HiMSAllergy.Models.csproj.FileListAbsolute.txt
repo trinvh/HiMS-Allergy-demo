@@ -1,0 +1,6 @@
+D:\Development\HiMSAllergy\HiMSAllergy.Models\bin\Debug\HiMSAllergy.Models.dll
+D:\Development\HiMSAllergy\HiMSAllergy.Models\bin\Debug\HiMSAllergy.Models.pdb
+D:\Development\HiMSAllergy\HiMSAllergy.Models\obj\Debug\HiMSAllergy.Models.csprojAssemblyReference.cache
+D:\Development\HiMSAllergy\HiMSAllergy.Models\obj\Debug\HiMSAllergy.Models.csproj.CoreCompileInputs.cache
+D:\Development\HiMSAllergy\HiMSAllergy.Models\obj\Debug\HiMSAllergy.Models.dll
+D:\Development\HiMSAllergy\HiMSAllergy.Models\obj\Debug\HiMSAllergy.Models.pdb

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Data>
+  <row DrugId="10872" DrugName="4-WAY MENTHOL" LexiDrugId="d04186" />
+  <row DrugId="4768" DrugName="ABILIFY" LexiDrugId="d04825" />
+  <row DrugId="430" DrugName="ACETAMINOPHEN" LexiDrugId="d00049" />
+  <row DrugId="1321" DrugName="ACETAMINOPHEN-CODEINE" LexiDrugId="d03423" />
+  <row DrugId="1325" DrugName="ACETAMINOPHEN-HYDROCODONE" LexiDrugId="d03428" />
+  <row DrugId="1327" DrugName="ACETAMINOPHEN-OXYCODONE" LexiDrugId="d03431" />
+  <row DrugId="15166" DrugName="ADDERALL" LexiDrugId="d04035" />
+  <row DrugId="11582" DrugName="ADVAIR HFA" LexiDrugId="d04611" />
+  <row DrugId="822" DrugName="ALBUTEROL" LexiDrugId="d00749" />
+  <row DrugId="5761" DrugName="AMBIEN" LexiDrugId="d00910" />
+  <row DrugId="510" DrugName="AMITRIPTYLINE" LexiDrugId="d00146" />
+  <row DrugId="801" DrugName="AMLODIPINE" LexiDrugId="d00689" />
+  <row DrugId="464" DrugName="AMOXICILLIN" LexiDrugId="d00088" />
+</Data>

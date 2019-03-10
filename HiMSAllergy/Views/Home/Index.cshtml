@@ -1,0 +1,322 @@
+﻿@{
+    ViewBag.Title = "Histories";
+}
+
+<div class="panel-group mt-20">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">Allergy Histories</h4>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                        <select class="form-control" name="cbStatus">
+                            <option value="active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="input-group mt-10">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                        <select class="form-control" name="cbTimeScale">
+                            <option value="all">All</option>
+                            <option value="6months">6 months</option>
+                            <option value="recently">Most recent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Keyword..." name="txtKeyword">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                    </div>
+                    <div class="row mt-10">
+                        <div class="col-xs-6">
+                            <button class="btn btn-primary" id="btnCreate">CREATE NEW</button>
+                        </div>
+                        <div class="col-xs-6">
+                            <button class="btn btn-primary" id="btnPrint">PRINT LIST</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="tblHistories">
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Type</th>
+                                    <th>Allergen</th>
+                                    <th>Reaction</th>
+                                    <th>Severity</th>
+                                    <th>Notes</th>
+                                    <th>Create Info</th>
+                                    <th>Update Info</th>
+                                    <th class="no-print">Actions</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="itemModal" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="allergy_form">
+                <div class="modal-header"></div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Allergen Type</label>
+                                <select class="form-control" id="cbAllergenTypes" name="allergen_type" required></select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Severity</label>
+                                <select class="form-control" id="cbSeverities" name="severity" required></select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Reaction</label>
+                                <select class="form-control" id="cbReactions" name="reaction" required></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row hidden" id="tgAllergens">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label>Allergy</label>
+                                <select class="form-control" id="cbAllergens" name="allergen"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-7"></div>
+                    </div>
+                    <div class="row hidden" id="tgMedications">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label>Medication</label>
+                                <select class="form-control" id="cbMedications" name="medication"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label>Search for medication</label>
+                                <input type="text" id="txtSearchMedication" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Notes</label>
+                                <textarea id="notes" class="form-control" rows="10" name="notes"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSubmit" type="submit" class="btn btn-primary">Submit</button>
+                    <button id="btnReset" type="reset" class="btn btn-warning">Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        var currentItem = null;
+
+        var reloadData = function () {
+            table.ajax.url('/api/allergies?status=' + $('select[name="cbStatus"]').val() + '&timeScale=' + $('select[name="cbTimeScale"]').val()).load();
+        };
+
+        var populateDropdown = function (dom, endpoint, valueName, textName) {
+            dom.empty();
+            $.getJSON(endpoint).then((resp) => {
+                const items = resp.data;
+                dom.append($('<option/>', {
+                    value: "",
+                    text: "Please select an option"
+                }));
+                $.each(items, function (index, item) {
+                    dom.append($('<option/>', {
+                        value: item[valueName],
+                        text: item[textName]
+                    }));
+                });
+            });
+        };
+
+        var fillEditedItem = function (data) {
+            $('#cbAllergenTypes').val(data.AllergenType).change();
+            $('#cbSeverities').val(data.SeverityId);
+            $('#cbReactions').val(data.ReactionId);
+            $('#cbAllergens').val(data.AllergenId);
+            console.log(data.AllergenId, $('#cbAllergen option'));
+            if (data.DrugName !== null) {
+                $('#cbMedications').val(data.DrugName.toUpperCase());
+                // $('#cbMedications option[value="' + data.DrugName.toUpperCase() + '"]').attr('selected', 'selected');
+            }
+            $('#notes').val(data.Notes);
+        }
+
+        var reset = function () {
+            console.log(currentItem);
+            if (currentItem === null) {
+                $('#cbAllergenTypes').prop("selectedIndex", 0).change();
+                $('#cbSeverities').prop("selectedIndex", 0);
+                $('#cbReactions').prop("selectedIndex", 0);
+                $('#cbAllergens').prop("selectedIndex", 0);
+                $('#cbMedications').prop("selectedIndex", 0);
+                $('#notes').val('');
+            } else {
+                fillEditedItem(currentItem);
+            }
+        }
+
+        $(document).ready(function () {
+            populateDropdown($('#cbAllergenTypes'), '/api/allergenTypes', "CodeId", "CodeText");
+            populateDropdown($('#cbSeverities'), '/api/severities', "CodeId", "CodeDesc");
+            populateDropdown($('#cbReactions'), '/api/reactions', "CodeId", "CodeDesc");
+            populateDropdown($('#cbAllergens'), '/api/allergens', "CodeId", "CodeDesc");
+            populateDropdown($('#cbMedications'), '/api/medications', "DrugName", "DrugName");
+            window.table = $('#tblHistories').DataTable({
+                dom: "tilp",
+                responsive: true,
+                ajax: '/api/allergies',
+                columns: [
+                    { "data": "ClientName" },
+                    { "data": "Type" },
+                    { "data": "Allergen" },
+                    { "data": "Reaction" },
+                    { "data": "Severity" },
+                    { "data": "Notes" },
+                    {
+                        "data": "CreateDateWithTime",
+                        "render": function (data, row, item) {
+                            return `Created on ${item.CreateDate} by ${item.CreateUser}`
+                        }
+                    },
+                    {
+                        "data": "UpdateDateWithTime",
+                        "render": function (data, row, item) {
+                            return item.UpdateDate !== null ? `Updated on ${item.UpdateDate} by ${item.UpdateUser}` : 'Not updated yet'
+                        }
+                    },
+                    {
+                        "data": function (item) {
+                            return `<div class="dropdown">
+                                      <button class="btn btn-default dropdown-toggle dropdown-right" type="button" data-toggle="dropdown">Choose Action
+                                      <span class="caret"></span></button>
+                                      <ul class="dropdown-menu" role="menu">
+                                        <li><a role="menuitem" data-id="${item.ClientAllergyId}" class="btnEdit">Edit</a></li>
+                                      </ul>
+                                    </div>`
+                        },
+                        "className": "no-print"
+                    }
+                ]
+            });
+            // new $.fn.dataTable.FixedHeader(table);
+
+            $('input[name="txtKeyword"]').on('keyup', function () {
+                table.search($(this).val()).draw();
+            });
+
+            $('select[name="cbStatus"], select[name="cbTimeScale"]').on('change', function () {
+                reloadData();
+            });
+        }).on('change', '#cbAllergenTypes', function () {
+            const allergenType = $(this).find('option:selected').text();
+            switch (allergenType.toUpperCase()) {
+                case 'ALLERGEN':
+                    $('#tgAllergens').removeClass('hidden');
+                    $('#tgMedications').addClass('hidden');
+                    break;
+                case 'MEDICATION':
+                    $('#tgMedications').removeClass('hidden');
+                    $('#tgAllergens').addClass('hidden');
+                    break;
+                default:
+                    $('#tgAllergens').addClass('hidden');
+                    $('#tgMedications').addClass('hidden');
+                    break;
+            }
+        }).on('click', '.btnEdit', function (e) {
+            e.preventDefault();
+            const tr = $(this).closest('tr');
+            currentItem = table.row(tr).data();
+            console.log(currentItem);
+            fillEditedItem(currentItem);
+            $('#itemModal').modal('show');
+        }).on('click', '#btnCreate', function (e) {
+            e.preventDefault();
+            currentItem = null;
+            reset();
+            $('#itemModal').modal('show');
+        }).on('click', '#btnSubmit', function (e) {
+            e.preventDefault();
+            if (!$('#cbAllergenTypes').val() || !$('#cbAllergenTypes').val() || !$('#cbAllergenTypes').val()) {
+                alert('Please input all fields before submitting');
+                return;
+            }
+            if ($('#cbAllergenTypes').find('option:selected').text().toUpperCase() === 'ALLERGEN' && !$('#cbAllergens').val()) {
+                alert('Please input all fields before submitting');
+                return;
+            }
+            if ($('#cbAllergenTypes').find('option:selected').text().toUpperCase() === 'MEDICATION' && !$('#cbMedications').val()) {
+                alert('Please input all fields before submitting');
+                return;
+            }
+            const url = currentItem !== null ? '/api/allergies/' + currentItem.ClientAllergyId : '/api/allergies/';
+            const verb = currentItem !== null ? 'PUT' : 'POST';
+            const data = $('#allergy_form').serializeArray().reduce(function (m, o) { m[o.name] = o.value; return m; }, {});
+            $.ajax({
+                url: url,
+                type: verb,
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(data),
+                success: function (resp) {
+                    $('#itemModal').modal('hide');
+                },
+                error: function (err) {
+
+                },
+                complete: function () {
+                    reloadData();
+                }
+            });
+        }).on('click', '#btnReset', function (e) {
+            e.preventDefault();
+            reset();
+        }).on('click', '#btnPrint', function (e) {
+            const currentSize = table.page.info().length;
+            table.page.len(100).draw();
+            $("#tblHistories").print({
+                addGlobalStyles: false,
+                mediaPrint: false,
+                stylesheet: "/Content/Print.css",
+                rejectWindow: true,
+                noPrintSelector: ".no-print",
+                deferred: $.Deferred().done(function () {
+                    table.page.len(currentSize).draw();
+                }),
+                iframe: true,
+                append: null,
+                prepend: null
+            });
+        });
+
+    </script>
+}
